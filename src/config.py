@@ -2,11 +2,10 @@
 Configuration parameters for experiments.
 """
 
-GRID_WIDTH = 40
-GRID_HEIGHT = 40
-OBSTACLE_DENSITY = 0.2
-Q_EPISODES = 800
-N_RUNS = 30
+GRID_WIDTH = 25
+GRID_HEIGHT = 25
+OBSTACLE_DENSITY = 0.25
+Q_EPISODES = 600
+N_RUNS = 20
 N_WORKERS = 4
-BETA = 0.5  # Q*-A* bias weight
-
+BETA = 1.2  # Q*-A* bias weight
