@@ -6,7 +6,7 @@ Real-world pathfinding is critical for applications like Google Maps, video game
 3. **Warehouse Automation**: Slower package handling by robots.
 4. **Emergency Response**: Delays in routing ambulances.
 
-This project enhances pathfinding using Q-Learning (machine learning) to guide the search. By learning from experience, we aim to reduce computation by 30% while maintaining near-optimal paths (within 5-10%), balancing speed and accuracy for real-time efficiency.
+This project enhances pathfinding using Q-Learning (machine learning) to guide the search. By learning we aim to reduce computation by 10% while maintaining near-optimal paths (within 5-10%), balancing speed and accuracy for real-time efficiency.
 
 ================================================================================
 
@@ -44,13 +44,13 @@ Experimental Design:
 - **Testing**: 30 independent runs on random maps. Compares A* (optimal), Weighted A* (fast), and Q*-A*.
 
 Metrics:
-1. **Node Expansions**: Computational effort (lower is better).
+1. **Node Expansions**: Computational effort.
 2. **Runtime**: Execution time.
 3. **Path Cost**: Length of the found path.
 4. **Cost Ratio**: cost / optimal_cost (target ≤ 1.10).
-5. **Expansion Reduction**: % reduction vs baseline (target ≥ 30%).
+5. **Expansion Reduction**: % reduction vs baseline (target ≥ 15%).
 
-Success Criteria: Q*-A* should reduce expansions/runtime by 15-30% vs A* while keeping cost within 10-20% of optimal, outperforming Weighted A* in quality/efficiency balance.
+Success Criteria: Q*-A* should reduce expansions/runtime by 15% vs A* while keeping cost within 10% of optimal, outperforming Weighted A* in quality/efficiency balance.
 
 ================================================================================
 
@@ -61,12 +61,4 @@ Future Work: Directions for Optimization or Expansion
 3. **Multi-Agent Pathfinding**: Coordinate multiple agents to avoid collisions in warehouses or traffic.
 4. **Hyperparameter Tuning**: Use grid search or adaptive beta to optimize performance.
 5. **Bidirectional Search**: Implement bidirectional Q*-A* to potentially halve search time.
-6. **Alternative Heuristics**: Test Manhattan or landmark-based heuristics.
-7. **Real-World Application**: Deploy on physical robots or in game engines (Unity/Unreal).
-8. **Theoretical Analysis**: Formal proofs for bounds on suboptimality and complexity.
-9. **Comparison with Modern Techniques**: Benchmark against JPS, Theta*, or D* Lite.
-10. **Transfer Learning**: Train a universal agent on features (e.g., local density) rather than specific maps.
-11. **Visualization Tools**: Heatmaps and animations to debug and present results.
-12. **Energy-Aware Pathfinding**: Optimize for energy consumption on heterogeneous terrains.
 
-Top Picks: Deep Q-Networks for scalability, Multi-Agent Pathfinding for complexity, and Real Robot Implementation for validation.
