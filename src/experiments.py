@@ -47,6 +47,8 @@ def run_single_experiment(width: int = config.GRID_WIDTH,
     agent = train_q_learning(graph, start, goal,
                              episodes= q_episodes,
                              max_steps=width * height)
+    # Pre-compute biases for faster search
+    agent.precompute_biases(graph)
     train_time_ms = (time.time() - t_train0) * 1000.0
 
     # Q*-A*
@@ -56,6 +58,11 @@ def run_single_experiment(width: int = config.GRID_WIDTH,
         if optimal == float("inf") or cost == float("inf"):
             return float("inf")
         return cost / optimal
+    
+    def expansion_reduction(expanded, baseline):
+        if baseline == 0:
+            return 0.0
+        return (1 - expanded / baseline) * 100
 
     return {
         "astar_cost": res_astar.cost,
@@ -66,11 +73,13 @@ def run_single_experiment(width: int = config.GRID_WIDTH,
         "wastar_expanded": res_wastar.expanded,
         "wastar_time_ms": res_wastar.runtime_ms,
         "wastar_cost_ratio": cost_ratio(res_wastar.cost, res_astar.cost),
+        "wastar_expansion_reduction": expansion_reduction(res_wastar.expanded, res_astar.expanded),
 
         "qstar_cost": res_qstar.cost,
         "qstar_expanded": res_qstar.expanded,
         "qstar_time_ms": res_qstar.runtime_ms,
         "qstar_cost_ratio": cost_ratio(res_qstar.cost, res_astar.cost),
+        "qstar_expansion_reduction": expansion_reduction(res_qstar.expanded, res_astar.expanded),
 
         "q_train_time_ms": train_time_ms,
 
@@ -91,8 +100,8 @@ def run_batch_experiments(n_runs: int = config.N_RUNS,
     os.makedirs(os.path.dirname(out_csv), exist_ok=True)
     fieldnames = [
         "astar_cost", "astar_expanded", "astar_time_ms",
-        "wastar_cost", "wastar_expanded", "wastar_time_ms", "wastar_cost_ratio",
-        "qstar_cost", "qstar_expanded", "qstar_time_ms", "qstar_cost_ratio",
+        "wastar_cost", "wastar_expanded", "wastar_time_ms", "wastar_cost_ratio", "wastar_expansion_reduction",
+        "qstar_cost", "qstar_expanded", "qstar_time_ms", "qstar_cost_ratio", "qstar_expansion_reduction",
         "q_train_time_ms",
         "width", "height", "density", "q_episodes",
     ]

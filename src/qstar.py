@@ -6,7 +6,7 @@ import heapq
 import time
 from typing import Dict, Optional, List, Tuple
 from .graph import Graph, NodeId
-from .qlearning import QLearningAgent, cardinal_neighbors
+from .qlearning import QLearningAgent, cardinal_neighbors, all_neighbors
 from .astar import reconstruct_path, AStarResult
 from .config import BETA
 
@@ -16,15 +16,31 @@ def q_star_search(graph: Graph, start: NodeId, goal: NodeId, q_agent: QLearningA
     g_cost: Dict[NodeId, float] = {start: 0.0}
     parent: Dict[NodeId, Optional[NodeId]] = {start: None}
     expanded = 0
-
+    
     def q_bias(u: NodeId) -> float:
-        neighbors = cardinal_neighbors(graph, u)
-        if not neighbors:
-            return 0.0
-        return max(q_agent.get_q(u, v) for v, _ in neighbors)
+        """Get Q-bias value (uses pre-computed cache if available)."""
+        return q_agent.get_bias(u)
+    
+    def compute_weight(u: NodeId) -> float:
+        """
+        Compute adaptive weight based on Q-values (Weighted A* style).
+        Uses cached bias to minimize overhead.
+        """
+        bias = q_bias(u)
+        # If no Q-value info, use standard A* (weight=1.0)
+        if bias == 0.0:
+            return 1.0
+        # Q-values are negative. More negative = further from goal = use higher weight
+        # Map to weight range [1.0, 1.0 + beta] similar to Weighted A*
+        # Typical Q-values: -10 (far) to -5 (close), map to weights 1.0+beta to 1.0
+        # Invert: more negative Q -> higher weight (faster search, less optimal)
+        normalized = max(0.0, min(1.0, -bias / 10.0))  # Normalize to [0, 1]
+        weight = 1.0 + normalized * beta
+        return weight
 
     h_start = graph.euclidean_heuristic(start, goal)
-    f_start = g_cost[start] + h_start - beta * q_bias(start)
+    weight_start = compute_weight(start)
+    f_start = g_cost[start] + weight_start * h_start
     heapq.heappush(open_heap, (f_start, start))
 
     closed = set()
@@ -47,7 +63,8 @@ def q_star_search(graph: Graph, start: NodeId, goal: NodeId, q_agent: QLearningA
                 g_cost[v] = tentative
                 parent[v] = u
                 h_v = graph.euclidean_heuristic(v, goal)
-                f_v = tentative + h_v - beta * q_bias(v)
+                weight_v = compute_weight(v)
+                f_v = tentative + weight_v * h_v
                 heapq.heappush(open_heap, (f_v, v))
 
     runtime_ms = (time.time() - t0) * 1000.0

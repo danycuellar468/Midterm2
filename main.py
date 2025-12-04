@@ -49,13 +49,14 @@ if __name__ == "__main__":
             out_csv="results/experiments_parallel.csv"
         )
     else:
+        # Beta is used in q_star_search, not in run_batch_experiments
+        # Update config BETA if needed, or pass it through run_single_experiment
         run_batch_experiments(
             n_runs=args.runs,
             width=args.width,
             height=args.height,
             density=args.density,
             q_episodes=args.episodes,
-            beta=args.beta,
             out_csv="results/experiments.csv"
         )
     

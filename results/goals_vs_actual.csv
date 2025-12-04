@@ -1,7 +1,7 @@
 Metric,Goal,Q*-A* Actual,Weighted A* Actual,Status
 Node Expansion Reduction,"≥30% (Research Question)
-≥15% (Success Criteria)",-0.30%,80.74%,✗
+≥15% (Success Criteria)",36.85%,69.33%,✓
 Runtime Reduction,"≥30% (Research Question)
-≥15% (Success Criteria)",-255.39%,77.32%,✗
+≥15% (Success Criteria)",7.47%,60.35%,✗
 Path Cost Deviation,"≤5-10% (Research Question)
-≤10-20% (Success Criteria)",0.00%,1.17%,✓
+≤10-20% (Success Criteria)",inf%,inf%,✗
